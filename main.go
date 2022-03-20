@@ -66,13 +66,32 @@ func updatePerson(res *fiber.Ctx) error {
 	}
 	response, _ := json.Marshal(curr)
 	return res.Status(200).Send(response)
-
 }
+
+func deletePerson(res *fiber.Ctx) error {
+	collection, err := getMongoDbCollection(dbname, collectionName)
+	if err != nil {
+		return res.Status(400).SendString("There is some Problem! Please try again")
+	}
+	id := res.Params("id")
+	objID, _ := primitive.ObjectIDFromHex(id)
+	var filter bson.M = bson.M{
+		"_id": objID,
+	}
+	curr, err := collection.DeleteOne(context.Background(), filter)
+	if err != nil {
+		return res.Status(400).SendString("There is some Problem! Please try again")
+	}
+	response, _ := json.Marshal(curr)
+	return res.Status(200).Send(response)
+}
+
 func main() {
 	app := fiber.New()
 	app.Get("/", indexRoute)
 	app.Post("/create", addPerson)
 	app.Put("/update/:id", updatePerson)
+	app.Delete("/delete/:id", deletePerson)
 
 	app.Listen(":3000")
 }
