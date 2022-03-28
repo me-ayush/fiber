@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-func test() {
+func main() {
 	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb+srv://ayush:123@fiber-go.e7fh5.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"))
 	if err != nil {
 		log.Fatal(err)
